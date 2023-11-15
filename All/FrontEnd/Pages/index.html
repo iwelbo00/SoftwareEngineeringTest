@@ -1,11 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jimmy</title>
+    <script>
+        async function addItem() {
+
+            if (document.getElementById("itemName").value !== "" && document.getElementById("itemQty").value !== "") {
+                const name = document.getElementById("itemName").value;
+                const qty = document.getElementById("itemQty").value;
+
+                const request = {
+                    name: name,
+                    qty: qty,
+                };
+
+                const response = await fetch('http://localhost/Project/ApiFolder/index.php/Inventory/insertInventory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request),
+
+                });
+
+                document.getElementById("itemName").value = "";
+                document.getElementById("itemQty").value = "";
+                reload();
+            }
+        }
+        function reload() {
+            location.reload();
+        }
+    </script>
 </head>
+
 <body>
-    
+    <h2>Inventory Item Submission</h2>
+    <form>
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName" name="itemName" required>
+        <br>
+        <label for="itemQty">Quantity:</label>
+        <input type="number" id="itemQty" name="itemQty" required>
+        <br>
+        <input type="button" value="Add Item" onclick="addItem();">
+    </form>
+    <script type="text/javascript">
+        window.onload = function () {
+            getItems();
+        }
+        async function getItems() {
+            const response = await fetch("http://localhost/Project/ApiFolder/index.php/Inventory/getInventory");
+
+            if (response) {
+                responseData = await response.json();
+
+                var div = document.getElementById("shop");
+                `
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                    <tr>`
+                for (var i in responseData) {
+
+                    var row =
+                        `
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <br>
+                            <td id="id${i}" style="display: none;">${responseData[i].id}</td>
+                            <td id="item${i}">${responseData[i].name}</td>
+                            <td id="price${i}">${responseData[i].qty}</td>           
+                            <br><br>
+                        `
+                    div.innerHTML += row;
+                }
+                `
+                </tr>
+                </table>
+                `
+            }
+        }
+    </script>
+    <footer>
+
+    </footer>
+
 </body>
+
 </html>

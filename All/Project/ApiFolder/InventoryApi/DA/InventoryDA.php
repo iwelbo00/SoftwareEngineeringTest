@@ -19,13 +19,13 @@ class InventoryDA {
 	{
 
 		try {
-			$query = "SELECT * FROM Inventory";
+			$query = "SELECT * FROM inventory";
 			$stmt = $this->pdo->prepare($query);
 			$stmt->execute();
 			$inventoryItems = array();
 
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-				$inventory = new Inventory($row['Id'], $row['name'], $row['qty']);
+				$inventory = new Inventory($row['id'], $row['name'], $row['qty']);
 				$inventoryItems[] = $inventory;
 			}
 			return $inventoryItems;
