@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <title>Jimmy</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script>
         async function addItem() {
 
@@ -36,63 +38,83 @@
         }
     </script>
 </head>
-
 <body>
-    <h2>Inventory Item Submission</h2>
-    <form>
-        <label for="itemName">Item Name:</label>
-        <input type="text" id="itemName" name="itemName" required>
-        <br>
-        <label for="itemQty">Quantity:</label>
-        <input type="number" id="itemQty" name="itemQty" required>
-        <br>
-        <input type="button" value="Add Item" onclick="addItem();">
-    </form>
+    <div class="container">
+        <h2>Inventory Item Submission</h2>
+        <form>
+            <div class="form-group">
+                <label for="itemName">Item Name:</label>
+                <input type="text" class="form-control" id="itemName" name="itemName" required>
+            </div>
+            <div class="form-group">
+                <label for="itemQty">Quantity:</label>
+                <input type="number" class="form-control" id="itemQty" name="itemQty" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addItem()">Submit</button>
+        </form>
+        
+        <h2>Inventory Items</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="shop"></tbody>
+        </table>
+    </div>
+
     <script type="text/javascript">
-        window.onload = function () {
+        window.onload = function() {
             getItems();
         }
+
         async function getItems() {
             const response = await fetch("http://localhost/Project/ApiFolder/index.php/Inventory/getInventory");
+            
+            if (response.ok) {
+                const responseData = await response.json();
+                const tableBody = document.getElementById("shop");
+				tableBody.innerHTML = '';
 
-            if (response) {
-                responseData = await response.json();
 
-                var div = document.getElementById("shop");
-                `
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Quantity</th>
-                    </tr>
-                    <tr>`
-                for (var i in responseData) {
-
-                    var row =
-                        `
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <br>
-                            <td id="id${i}" style="display: none;">${responseData[i].id}</td>
-                            <td id="item${i}">${responseData[i].name}</td>
-                            <td id="price${i}">${responseData[i].qty}</td>           
-                            <br><br>
-                        `
-                    div.innerHTML += row;
-                }
-                `
-                </tr>
-                </table>
-                `
+                responseData.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.qty}</td>
+                            <td><button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button></td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
             }
         }
+
+        async function deleteItem(itemId) {
+            const response = await fetch('http://localhost/Project/ApiFolder/index.php/Inventory/deleteInventoryById', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: itemId }),
+            });
+
+            if (response.ok) {
+				
+                getItems();
+            } else {
+                console.error('Error deleting item:', response.status);
+            }
+        }
+
+        function submitForm() {
+            alert("Form Submitted");
+        }
     </script>
-    <footer>
-
-    </footer>
-
 </body>
-
 </html>
