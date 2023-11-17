@@ -2,13 +2,13 @@
 // Object model used for DA Queries
 class Inventory
 {
-    public $ID;
+    public $id;
     public $name;
     public $qty;
 
-    public function __construct($ID, $name, $qty)
+    public function __construct($id, $name, $qty)
     {
-        $this->ID = $ID;
+        $this->id = $id;
         $this->name = $name;
         $this->qty = $qty;
     }
