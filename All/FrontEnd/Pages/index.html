@@ -71,7 +71,6 @@
         window.onload = function() {
             getItems();
         }
-
         async function getItems() {
             const response = await fetch("http://localhost/Project/ApiFolder/index.php/Inventory/getInventory");
             
@@ -94,7 +93,6 @@
                 });
             }
         }
-
         async function deleteItem(itemId) {
             const response = await fetch('http://localhost/Project/ApiFolder/index.php/Inventory/deleteInventoryById', {
                 method: 'DELETE',
@@ -110,10 +108,6 @@
             } else {
                 console.error('Error deleting item:', response.status);
             }
-        }
-
-        function submitForm() {
-            alert("Form Submitted");
         }
     </script>
 </body>
